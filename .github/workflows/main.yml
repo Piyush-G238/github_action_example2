@@ -1,0 +1,31 @@
+name: new react workflow
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+job:
+  appbuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: install node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.12.1
+
+      - name: install dependencies
+        run: npm install
+
+      - name: lint
+        run: npm run lint
+
+      - name: test
+        run: npm run test
+
+      - name: build
+        run: npm run build
+
+      - name: deploy
+        run: echo "deploying application..."
