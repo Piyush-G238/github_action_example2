@@ -9,6 +9,8 @@ on:
 jobs:
   appbuild:
     runs-on: ubuntu-latest
+    outputs:
+      script-file: ${{steps.res.outputs.script-file}} #any name
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -30,6 +32,10 @@ jobs:
       - name: build
         run: npm run build
 
+      - name: saving filename as output
+        id: res
+        run: find dist/assets/*.js -type -f execdir echo 'script-file={}' >> $GITHUB_OUTPUT ';'
+
       - name: saving artifact
         uses: actions/upload-artifact@v4
         with:
@@ -48,7 +54,11 @@ jobs:
           name: dist
       
       - name: output contents
-        run: ls
+        run: |
+          cd ./dist
+          ls
 
+      - name: output filename
+        run: echo "${{needs.appbuild.outputs.script-file}}"
       - name: echo message
         run: echo "deploying app build"
